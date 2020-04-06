@@ -59,7 +59,10 @@ class UsuarioController extends Controller
     public function registroAction(Request $request)
     {
         $usuario = new Usuario();
+        $usuario->setPermiteEmail(true);
+
         $formulario = $this->createForm('AppBundle\Form\UsuarioType', $usuario);
+
         return $this->render('usuario/registro.html.twig', array('formulario' => $formulario->createView()));
     }
 }
