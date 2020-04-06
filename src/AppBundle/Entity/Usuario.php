@@ -6,6 +6,8 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * Usuario
@@ -28,6 +30,7 @@ class Usuario implements UserInterface
      * @var string
      *
      * @ORM\Column(name="nombre", type="string", length=100)
+     *  @Assert\NotBlank(message = "Por favor, escribe tu nombre.") 
      */
     private $nombre;
 
@@ -35,6 +38,7 @@ class Usuario implements UserInterface
      * @var string
      *
      * @ORM\Column(name="apellidos", type="string", length=255)
+     * @Assert\NotBlank(message = "Por favor, escribe tus apellidos.")
      */
     private $apellidos;
 
@@ -42,6 +46,7 @@ class Usuario implements UserInterface
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255)
+     * @Assert\Email()
      */
     private $email;
 
@@ -49,6 +54,7 @@ class Usuario implements UserInterface
      * @var string
      *
      * @ORM\Column(name="password", type="string", length=255)
+     * @Assert\Length(min = 6, minMessage = "La contraseña debería tener {{ limit }} caracteres o más para que sea más segura")
      */
     private $password;
 
@@ -56,6 +62,7 @@ class Usuario implements UserInterface
      * @var string
      *
      * @ORM\Column(name="direccion", type="text")
+     * @Assert\Length(min = 5, minMessage = "La dirección debería tener {{ limit }} caracteres o más para considerarse válida")
      */
     private $direccion;
 
@@ -393,5 +400,20 @@ class Usuario implements UserInterface
         return null;
     }
 
-    
+    public function esDniValido(ExecutionContextInterface $context)
+    {
+        $dni = $this->getDni();
+        // Comprobar que el formato sea correcto 
+        if (0 === preg_match("/\d{1,8}[a-z]/i", $dni)) {
+            $context->buildViolation('El DNI no tiene el formato correcto: entre 1 y 8 números seguidos de una letra (sin guiones y sin espacios)')->atPath('dni')->addViolation();
+            return;
+        }
+
+        // Comprobar que la letra cumple con el algoritmo 
+        $numero = substr($dni, 0, -1);
+        $letra = strtoupper(substr($dni, -1));
+        if ($letra !== substr('TRWAGMYFPDXBNJZSQVHLCKE', strtr($numero, 'XYZ', '012') % 23, 1)) {
+            $context->buildViolation('La letra del DNI no es correcta para el nú mero indicado.')->atPath('dni')->addViolation();
+        }
+    }
 }

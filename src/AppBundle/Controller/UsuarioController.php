@@ -6,6 +6,7 @@ use AppBundle\Entity\Usuario;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 /**
  *  @Route("/usuario") 
@@ -62,6 +63,26 @@ class UsuarioController extends Controller
         $usuario->setPermiteEmail(true);
 
         $formulario = $this->createForm('AppBundle\Form\UsuarioType', $usuario);
+
+        $formulario->handleRequest($request);
+        if ($formulario->isValid()) {
+            $this->addFlash('info', '¡Enhorabuena! Te has registrado correctamen te en Cupon');
+
+            $encoder = $this->get('security.encoder_factory')->getEncoder($usuario);
+            $passwordCodificado = $encoder->encodePassword($usuario->getPassword(), null);
+            $usuario->setPassword($passwordCodificado);
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($usuario);
+            $em->flush();
+
+            $token = new UsernamePasswordToken($usuario, $usuario->getPassword(), 'frontend', $usuario->getRoles());
+            $this->container->get('security.token_storage')->setToken($token);
+
+            return $this->redirectToRoute('portada', array( 'ciudad' => $usuario->getCiudad()->getSlug() ));
+
+        }
+
 
         return $this->render('usuario/registro.html.twig', array('formulario' => $formulario->createView()));
     }
