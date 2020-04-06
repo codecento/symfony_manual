@@ -1,0 +1,26 @@
+{# app/Resources/views/base.html.twig #}
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<title>
+			{% block title %}{% endblock %}
+			| Cupon</title>
+		{% block stylesheets %}{% endblock %}
+		<link rel="stylesheet" href="{{ asset('css/normalizar.css') }}"/>
+		<link rel="stylesheet" href="{{ asset('css/comun.css') }}"/>
+	</head>
+	<body id="{% block id '' %}">
+		<div id="contenedor"> {% block body %}{% endblock %}
+			<footer>&copy;
+				{{ 'now' | date('Y') }}
+				- Cupon
+				<a href="{{ path('pagina', { nombrePagina: 'ayuda' }) }}">Ayuda</a>
+				<a href="{{ path('pagina', { nombrePagina: 'contacto' }) }}">Contacto</a>
+				<a href="{{ path('pagina', { nombrePagina: 'privacidad' }) }}">Privacidad</a>
+				<a href="{{ path('pagina', { nombrePagina: 'sobre-nosotros' }) }}">Sobre nosotros</a>
+			</footer>
+			{% block javascripts %}{% endblock %}
+		</div>
+	</body>
+</html>

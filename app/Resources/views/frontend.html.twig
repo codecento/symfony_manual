@@ -1,0 +1,38 @@
+{# app/Resources/views/frontend.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% set ciudadSeleccionada = app.request.attributes.has('ciudad') ? app.request.attributes.get('ciudad') : ciudad_por_defecto  %}
+
+{% block stylesheets %}{% endblock %}
+{% block javascripts %}{% endblock %}
+{% block body %}
+	<header>
+		<h1>
+			<a href="{{ path('portada') }}">CUPON</a>
+		</h1>
+		<nav>
+			<ul>
+				<li>
+					<a href="{{path('portada')}}">Oferta del día</a>
+				</li>
+				<li>
+					<a href="{{path('ciudad_recientes', {ciudad:ciudadSeleccionada})}}">Ofertas recientes</a>
+				</li>
+				<li>
+					<a href="{{ path('usuario_compras') }}">Mis ofertas</a>
+				</li>
+				<li>{{ render(controller('AppBundle:Ciudad:listaCiudades', { ciudad: ciudadSeleccionada })) }}</li>
+			</ul>
+		</nav>
+	</header>
+	<article>
+		{% block article %}{% endblock %}
+	</article>
+	<aside>
+		{% block aside %}
+			<section id="login">
+				{{ render(controller('AppBundle:Usuario:cajaLogin')) }}
+			</section>
+		{% endblock %}
+	</aside>
+{% endblock %}

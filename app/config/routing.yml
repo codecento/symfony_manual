@@ -1,0 +1,10 @@
+app:
+    resource: "@AppBundle/Controller/"
+    type: annotation
+
+pagina:
+    path: /{nombrePagina}/
+    defaults:
+        _controller: "AppBundle:Default:pagina"
+        requirements:
+            nombrePagina: ayuda|privacidad|sobre_nosotros
