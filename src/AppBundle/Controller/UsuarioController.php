@@ -1,10 +1,11 @@
 <?php
-// src/AppBundle/Controller/UsuarioController.php 
+// Vicente Palacios Barrera - 2020
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Usuario;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
@@ -62,7 +63,10 @@ class UsuarioController extends Controller
         $usuario = new Usuario();
         $usuario->setPermiteEmail(true);
 
-        $formulario = $this->createForm('AppBundle\Form\UsuarioType', $usuario);
+        $formulario = $this->createForm('AppBundle\Form\UsuarioType', $usuario, array(
+            'validation_groups' => array('default', 'registro'),
+        ));
+        $formulario->add('registrarme', SubmitType::class);
 
         $formulario->handleRequest($request);
         if ($formulario->isValid()) {
@@ -85,5 +89,41 @@ class UsuarioController extends Controller
 
 
         return $this->render('usuario/registro.html.twig', array('formulario' => $formulario->createView()));
+    }
+
+    /**
+     *  @Route("/perfil", name="perfil") 
+     */
+    public function perfilAction(Request $request)
+    {
+        $usuario = $this->getUser();
+
+        $formulario = $this->createForm('AppBundle\Form\UsuarioType', $usuario);
+        $formulario->add('guardar', SubmitType::class, array(
+            'label' => 'Guardar cambios'
+        ));
+
+        $formulario->handleRequest($request);
+
+        if($formulario->isValid())
+        {
+            if (null !== $usuario->getPasswordEnClaro()) { 
+                $encoder = $this->get('security.encoder_factory') ->getEncoder($usuario); 
+                $passwordCodificado = $encoder->encodePassword( $usuario->getPasswordEnClaro(), null ); 
+                $usuario->setPassword($passwordCodificado); 
+                $em = $this->getDoctrine()->getManager(); 
+                $em->persist($usuario); 
+                $em->flush();
+
+                $this->addFlash('info', 'Los datos de tu perfil se han actualizado correctamente');
+
+
+
+            return $this->redirectToRoute('usuario_perfil');
+        }
+
+
+        return $this->render('usuario/perfil.html.twig', array( 'usuario' => $usuario, 'formulario' => $formulario->createView() ));
+
     }
 }

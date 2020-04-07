@@ -20,7 +20,7 @@ class UsuarioType extends AbstractType
         ->add('nombre')
         ->add('apellidos')
         ->add('email', EmailType::class)
-        ->add('password', RepeatedType::class, array( 
+        ->add('passwordEnClaro', RepeatedType::class, array( 
             'type' => PasswordType::class, 
             'invalid_message' => 'Las dos contraseñas deben coincidir', 
             'first_options' => array('label' => 'Contraseña'), 
@@ -31,8 +31,7 @@ class UsuarioType extends AbstractType
         ->add('dni')
         ->add('numero_tarjeta')
         ->add('ciudad')
-        ->add('permiteEmail', CheckboxType::class, array('required' => false)) 
-        ->add('registrarme', SubmitType::class);
+        ->add('permiteEmail', CheckboxType::class, array('required' => false));
     }
 
     public function configureOptions(OptionsResolver $resolver)

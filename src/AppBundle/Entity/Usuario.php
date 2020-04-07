@@ -50,11 +50,19 @@ class Usuario implements UserInterface
      */
     private $email;
 
+    /** 
+     * @var string
+     * 
+     *@Assert\NotBlank(groups={"registro"}) 
+     *@Assert\Length(min = 6, minMessage = "La contraseña debería tener {{ limit }} caracteres o más para que sea más segura")
+     */ 
+    private $passwordEnClaro;
+
+
     /**
      * @var string
      *
      * @ORM\Column(name="password", type="string", length=255)
-     * @Assert\Length(min = 6, minMessage = "La contraseña debería tener {{ limit }} caracteres o más para que sea más segura")
      */
     private $password;
 
@@ -393,7 +401,7 @@ class Usuario implements UserInterface
     }
     function eraseCredentials()
     {
-        $this->password = null;
+        $this->passwordEnClaro = null;
     }
     function getSalt()
     { // las contraseñas se codifican con 'bcrypt', por lo que no // es necesario definir el valor del 'salt' 
