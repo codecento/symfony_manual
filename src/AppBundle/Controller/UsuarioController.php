@@ -124,6 +124,6 @@ class UsuarioController extends Controller
 
 
         return $this->render('usuario/perfil.html.twig', array( 'usuario' => $usuario, 'formulario' => $formulario->createView() ));
-
     }
+}
 }

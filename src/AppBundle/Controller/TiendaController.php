@@ -23,7 +23,9 @@ class TiendaController extends Controller
         }
         $ofertas = $em->getRepository('AppBundle:Tienda')->findUltimasOfertasPublicadas($tienda->getId());
         $cercanas = $em->getRepository('AppBundle:Tienda')->findCercanas($tienda->getSlug(), $tienda->getCiudad()->getSlug());
-        return $this->render('tienda/portada.html.twig', array('tienda' => $tienda, 'ofertas' => $ofertas, 'cercanas' => $cercanas));
+
+        $formato = $this->get('request')->getRequestFormat();
+        return $this->render('tienda/portada.' . $formato . '.twig', array('tienda' => $tienda, 'ofertas' => $ofertas, 'cercanas' => $cercanas));
     }
     // ...
 }

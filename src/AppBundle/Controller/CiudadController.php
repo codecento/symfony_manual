@@ -25,15 +25,25 @@ class CiudadController extends Controller
         return $this->render('ciudad/_lista_ciudades.html.twig', array('ciudades' => $ciudades, 'ciudadActual' => $ciudad));
     }
 
-    /** * @Route("/{ciudad}/recientes", name="ciudad_recientes") */ 
+    /** @Route( 
+     * "/{ciudad}/recientes.{_format}",
+     * defaults = { "_format" = "html" }, 
+     * name="ciudad_recientes" 
+     * ) 
+     */
     public function recientesAction($ciudad)
     {
         $em = $this->getDoctrine()->getManager();
         $ciudad = $em->getRepository('AppBundle:Ciudad')->findOneBySlug($ciudad);
-        if (!$ciudad) { throw $this->createNotFoundException('No existe la ciudad'); }
+        if (!$ciudad) {
+            throw $this->createNotFoundException('No existe la ciudad');
+        }
 
         $cercanas = $em->getRepository('AppBundle:Ciudad')->findCercanas($ciudad->getId());
         $ofertas = $em->getRepository('AppBundle:Oferta')->findRecientes($ciudad->getId());
-        return $this->render('ciudad/recientes.html.twig', array('ciudad' => $ciudad, 'cercanas' => $cercanas, 'ofertas' => $ofertas));
+
+        $formato = $request->getRequestFormat();
+
+        return $this->render('ciudad/recientes.'.$formato.'.twig', array('ciudad' => $ciudad, 'cercanas' => $cercanas, 'ofertas' => $ofertas));
     }
 }
