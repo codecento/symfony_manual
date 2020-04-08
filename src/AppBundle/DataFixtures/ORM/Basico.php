@@ -66,14 +66,13 @@ class Basico implements ORMFixtureInterface, ContainerAwareInterface
         // Crear 10 tiendas en cada ciudad
         $ciudades = $manager->getRepository('AppBundle:Ciudad')->findAll();
         $numTienda = 0;
-        foreach ($ciudades as $ciudad) {
-            for ($i = 1; $i <= 10; $i++) {
-                $numTienda++;
-
+        foreach ($ciudades as $ciudad) { 
+            for ($j=1; $j<=rand(2, 5); $j++) { 
                 $tienda = new Tienda();
+
+                
+        
                 $tienda->setNombre('Tienda #' . $numTienda);
-                $tienda->setLogin('tienda' . $numTienda);
-                $tienda->setPassword('password' . $numTienda);
                 //$tienda->setSalt(md5(time()));
                 $tienda->setDescripcion(
                     "Lorem ipsum dolor sit amet, consectetur adipisicing elit,"
@@ -81,8 +80,11 @@ class Basico implements ORMFixtureInterface, ContainerAwareInterface
                         . "aliqua. Ut enim ad minim veniam, quis nostrud exercitation"
                         . "ullamco laboris nisi ut aliquip ex ea commodo consequat."
                 );
-                $tienda->setDireccion("Calle Lorem Ipsum, $i\n" . $ciudad->getNombre());
+                $tienda->setDireccion("Calle Lorem Ipsum, $j\n" . $ciudad->getNombre());
                 $tienda->setCiudad($ciudad);
+                $tienda->setLogin('tienda'.$j);
+                $encoder = $this->container->get('security.encoder_factory') ->getEncoder($tienda);
+                $passwordEnClaro = 'tienda'.$j; $passwordCodificado = $encoder->encodePassword( $passwordEnClaro, $tienda->getSalt() ); $tienda->setPassword($passwordCodificado);
 
                 $manager->persist($tienda);
             }

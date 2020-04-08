@@ -28,7 +28,13 @@ class LoginListener
         if (null === $this->ciudad) {
             return;
         }
-        $urlPortada = $this->router->generate('portada', array('ciudad' => $this->ciudad));
+        if ($this->checker->isGranted('ROLE_TIENDA')) {
+            $urlPortada = $this->router->generate('extranet_portada');
+        } else {
+            $urlPortada = $this->router->generate('portada', array('ciudad' => $this->ciudad));
+        }
+
         $event->setResponse(new RedirectResponse($urlPortada));
+        $event->stopPropagation();
     }
 }

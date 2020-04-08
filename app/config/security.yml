@@ -1,6 +1,16 @@
 # app/config/security.yml 
 security: 
-    firewalls: 
+    firewalls:
+        extranet: 
+            pattern: ^/extranet 
+            provider: tiendas 
+            anonymous: ~ 
+            form_login: 
+                login_path: /extranet/login 
+                check_path: /extranet/login_check 
+            logout: 
+                path: extranet_logout
+                 
         frontend: 
             pattern: ^/* 
             provider: usuarios 
@@ -19,8 +29,14 @@ security:
         - { path: ^/usuario/login, roles: IS_AUTHENTICATED_ANONYMOUSLY } 
         - { path: ^/usuario/registro, roles: IS_AUTHENTICATED_ANONYMOUSLY } 
         - { path: ^/usuario/*, roles: ROLE_USUARIO }
+        - { path: ^/extranet/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/extranet/*, roles: ROLES_TIENDA }
     providers: 
         usuarios: 
             entity: { class: AppBundle\Entity\Usuario, property: email }
+        tiendas:
+            entity: { class: AppBundle\Entity\Tienda, property: login } 
     encoders: 
         AppBundle\Entity\Usuario: bcrypt
+        AppBundle\Entity\Tienda: bcrypt
+

@@ -3,12 +3,12 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /** 
  * @ORM\Entity(repositoryClass="AppBundle\Repository\TiendaRepository")
  */
-class Tienda
+class Tienda implements UserInterface
 {
     /**
      * @ORM\Id
@@ -215,5 +215,25 @@ class Tienda
     public function __toString()
     {
         return $this->getNombre();
+    }
+
+    public function eraseCredentials()
+    {
+
+    }
+
+    public function getSalt()
+    {
+        return null;
+    }
+
+    public function getRoles()
+    {
+        return array('ROLE_TIENDA');
+    }
+    
+    public function getUsername()
+    {
+        return $this->getLogin();
     }
 }
