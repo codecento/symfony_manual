@@ -31,6 +31,10 @@ security:
         - { path: ^/usuario/*, roles: ROLE_USUARIO }
         - { path: ^/extranet/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/extranet/*, roles: ROLES_TIENDA }
+        
+    access_decision_manager: 
+        strategy: unanimous
+
     providers: 
         usuarios: 
             entity: { class: AppBundle\Entity\Usuario, property: email }

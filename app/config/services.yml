@@ -25,6 +25,7 @@ services:
             - { name: kernel.event_listener, event: kernel.response }
     app.security.oferta_voter: 
         class: AppBundle\Security\CreadorOfertaVoter 
+        arguments: ['@doctrine.orm.entity_manager', '@service_container'] 
         tags: 
             - { name: security.voter }
 

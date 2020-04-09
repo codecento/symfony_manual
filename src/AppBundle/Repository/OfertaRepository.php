@@ -55,4 +55,12 @@ class OfertaRepository extends \Doctrine\ORM\EntityRepository
         $consulta->setParameter('fecha', new \DateTime('today'));
         return $consulta->getResult();
     }
+
+    public function findVentasByOferta($oferta)
+    {
+        $em = $this->getEntityManager();
+        $consulta = $em->createQuery(' SELECT v, o, u FROM AppBundle:Venta v JOIN v.oferta o JOIN v.usuario u WHERE o.id = :id ORDER BY v.fecha DESC ');
+        $consulta->setParameter('id', $oferta);
+        return $consulta->getResult();
+    }
 }
